@@ -1,6 +1,7 @@
 const Twit = require('twit');
 const config = require('./config.js');
 let schedule = require('node-schedule');
+const request = require('request');
 
 let T = new Twit(config);
 
@@ -23,9 +24,16 @@ function tweetIt(txt){
   })
 }
 
-var j = schedule.scheduleJob({hour: 21, minute: 20}, function(){
-  console.log('Time for tea!');
+var j = schedule.scheduleJob({hour: 19, minute: 20}, function(){
+
+  request('https://talaikis.com/api/quotes/random/', function (error, response, body) {
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('body:', JSON.parse(body).quote); // Print the HTML for the Google homepage.
+    tweetIt('Auto post das 4:20: '+ JSON.parse(body).quote)
+  });
+  
 });
 
-var n = new Date();
-console.log(n);
+
+
